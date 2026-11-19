@@ -1,117 +1,156 @@
-# Android Home Server
+# Turn Your Old Android Phone Into a Personal Server! 📱☁️
 
-A self-hosted home server running on an Android smartphone using Termux and Debian PRoot.
+**Don't let your old smartphone collect dust. Turn it into your own personal cloud and media server!**
 
-## Project Overview
+Android Home Server transforms an unused Android smartphone into a personal server where you can upload files, store documents, organize photos, upload movies, and stream your videos whenever you want.
 
-This project turns an Android smartphone into a multifunctional home server.
+Instead of leaving your old phone unused, give it a second life as your own mini server — accessible from your laptop, tablet, or another smartphone.
 
-It provides personal cloud storage, media streaming, web dashboard and remote access.
+**Your phone. Your files. Your own server.**
 
-## Features
+---
 
-- **Web Dashboard** – Central page to access server services.
-- **My Cloud** – Personal file storage and file management using File Browser Next.
-- **Jellyfin** – Self-hosted media streaming for movies, TV shows and music.
-- **Nginx** – Reverse proxy connecting the different services.
-- **Cloudflare Tunnel** – Remote access through a custom domain without port forwarding.
-- **FastAPI Manager** – Server management API and dashboard integration.
-- **Termux:Boot** – Automatic startup scripts after phone reboot.
+## What Can You Do With It?
 
-## Architecture
+Imagine turning your old Android phone into your own private cloud server.
+
+<grid columns={2} gap={3}>
+  <grid-item>
+    <AsyncImage query="modern cloud file manager web interface file upload folders desktop" aspectRatio="5:4" width="100%"/>
+    **Upload & Store Files**
+
+    Upload documents, PDFs, assignments and other files to your own server.
+  </grid-item>
+  <grid-item>
+    <AsyncImage query="Jellyfin media server movie library interface television" aspectRatio="5:4" width="100%"/>
+    **Watch Your Movies**
+
+    Upload your movies and videos, organize your media library and stream them using Jellyfin.
+  </grid-item>
+  <grid-item>
+    <AsyncImage query="personal cloud storage photo gallery interface" aspectRatio="5:4" width="100%"/>
+    **Manage Your Files**
+
+    Browse, download, upload and organize your personal files through a web browser.
+  </grid-item>
+  <grid-item>
+    <AsyncImage query="smartphone home server dashboard dark web interface" aspectRatio="5:4" width="100%"/>
+    **Manage Your Server**
+
+    Access a central dashboard to reach your server services.
+  </grid-item>
+</grid>
+
+## Access Your Server From Anywhere
+
+Choose how you want to connect to your Android server.
+
+### 1. Local Network (Wi-Fi)
+
+Access your server when your phone and other devices are connected to the same Wi-Fi network.
+
+### 2. Cloudflare Tunnel
+
+Access your server remotely through your own public domain, without traditional router port forwarding.
+
+### 3. Tailscale VPN
+
+Create a private network between your devices and access your server remotely without making it publicly accessible.
+
+You can choose one method or configure multiple methods depending on your needs.
+
+---
+
+## How Does It Work?
+
+Your old Android phone becomes the server host.
 
 ```text
-Android Smartphone
-|
-+-- Termux
-|   |
-|   +-- Debian PRoot
-|   |   |
-|   |   +-- Nginx :8080
-|   |   +-- My Cloud :8081
-|   |   +-- Jellyfin :8096
-|   |   +-- API :8000
-|   |   +-- Manager :8001
-|   |
-|   +-- Cloudflare Tunnel
-|   +-- Termux:Boot
-|
-+-- Remote Access
-    |
-    +-- Cloudflare
-        |
-        +-- Web Dashboard
-        +-- My Cloud
-        +-- Jellyfin
+       YOUR DEVICES
+    Laptop / Tablet / Phone
+              |
+       Choose Access Method
+       /        |        \
+      LAN   Cloudflare  Tailscale
+       \        |        /
+              Nginx
+                |
+        Android Home Server
+                |
+        Android Smartphone
+                |
+       +--------+--------+
+       |        |        |
+    My Cloud Jellyfin Dashboard
+       |        |
+    Upload    Watch
+    Documents Movies
+    Photos    Videos
+```
 
+## What You Need
 
+- An old Android smartphone (ARM64 recommended).
+- Termux to run server tools.
+- Debian Linux through PRoot.
+- A Wi-Fi or internet connection.
+- Storage space for your files and media.
 
+Optional:
+- Cloudflare account and domain for public access.
+- Tailscale account for private remote access.
+- Termux:Boot for startup automation.
 
-Android-Home-Server/
-├── README.md
-├── .gitignore
-├── docs/
-├── scripts/
-├── dashboard/
-├── nginx/
-├── cloudflare/
-├── jellyfin/
-└── my-cloud/
+## Getting Started
 
+1. Download or clone this GitHub repository.
+2. Read the installation guide.
+3. Prepare Termux and Debian on your Android phone.
+4. Install and configure the server components.
+5. Choose your preferred access method.
+6. Start uploading your files and organizing your media!
 
+**Installation Guide:** `docs/installation-guide.md`
 
+> This repository provides the source code, configuration examples and setup documentation. It is not yet a one-click installer. Some components require manual configuration.
 
-Kemudian semak:
+## Project Components
 
-```bash
-cat README.md
-//
+| Component | What It Does |
+|---|---|
+| My Cloud | Upload, download and manage files |
+| Jellyfin | Organize and stream movies and videos |
+| Dashboard | Central access to server services |
+| Nginx | Routes requests to the different services |
+| Backend API | Provides server-related functionality |
+| Server Manager | Provides server monitoring and management |
+| Cloudflare Tunnel | Public remote access |
+| Tailscale | Private remote access |
 
+## Important: Your Own Personal Server
 
-cat > docs/architecture.md <<'EOF'
-# System Architecture
+This project is designed to help you build your own server using your own Android smartphone.
 
-## Overview
+Cloning this repository does not give you access to the original project's phone, files, movies, accounts or live server.
 
-The Android Home Server uses an Android smartphone as the main host machine.
+You will configure your own storage, services, credentials and network access.
 
-Termux provides the Linux-like environment, while Debian PRoot runs the server applications.
+For security, use strong passwords and protect administrative services. Public access should never be left unprotected.
 
-## Services
+## Project Goal
 
-| Service | Port | Purpose |
-|---|---:|---|
-| Nginx | 8080 | Main web entry point |
-| My Cloud | 8081 | Personal file storage |
-| Jellyfin | 8096 | Media streaming |
-| API | 8000 | Backend API |
-| Manager | 8001 | Server management |
+The goal is simple:
 
-## Request Flow
+**Reuse an old smartphone and turn it into a useful personal cloud and media server.**
 
-Users access the server through the Cloudflare Tunnel.
+No need to buy a dedicated server just to start learning and experimenting with self-hosting.
 
-Cloudflare forwards requests to the local Nginx server on port 8080.
+Give your old phone a new purpose!
 
-Nginx routes requests to the appropriate application based on URL paths.
+---
 
-- `/` - Dashboard
-- `/cloud/` - My Cloud
-- `/jellyfin/` - Jellyfin
-- `/api/` - API
-- `/manager/` - Manager
+**Built by Nopal**
 
-## Host Environment
+GitHub: [@mnopa2020-hash](https://github.com/mnopa2020-hash)
 
-- Android smartphone
-- Termux
-- Debian PRoot
-- Termux:Boot
-
-## Remote Access
-
-Cloudflare Named Tunnel provides remote access without opening inbound router ports.
-
-## Notes
-
-Service availability depends on Android background process restrictions, network connectivity and device power.
+[View Android Home Server Repository](https://github.com/mnopa2020-hash/Android-Home-Server)
