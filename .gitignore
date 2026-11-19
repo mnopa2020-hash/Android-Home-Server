@@ -1,0 +1,39 @@
+# Secrets
+.env
+.env.*
+*.token
+*secret*
+*credentials*
+
+# Databases and user data
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+*.log
+logs/
+
+# Backups
+*.backup
+*.bak
+
+# Temporary files
+*.tmp
+.DS_Store
+
+# Admin authentication
+.admin_token
+.admin_token*
+**/.admin_token
+**/.admin_token*
+
+# Python
+__pycache__/
+*.py[cod]
+venv/
+.env/
+
+# Runtime files
+run/
+logs/

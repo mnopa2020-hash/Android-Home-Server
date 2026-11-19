@@ -1,0 +1,9 @@
+pydantic<2
+fastapi<0.116
+uvicorn
+starlette<0.47
+anyio
+idna
+click
+h11
+typing-extensions

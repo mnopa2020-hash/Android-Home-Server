@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Android Home Server</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#0b1120;color:#e5e7eb;font-family:Arial,sans-serif;padding:24px}
+header,main,footer{max-width:1050px;margin:auto}
+header{padding:24px 0}
+h1{font-size:30px;margin:0 0 8px}
+h2{font-size:17px;margin:0 0 18px}
+h3{font-size:14px;color:#94a3b8;font-weight:500;margin:0 0 8px}
+p{color:#94a3b8;font-size:13px}
+small{color:#94a3b8}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.pill{background:#172554;color:#93c5fd;padding:8px 12px;border-radius:20px;font-size:12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:15px;margin-bottom:16px}
+.card{background:#172033;border:1px solid #29364d;border-radius:14px;padding:20px;min-width:0}
+.value{font-size:27px;font-weight:bold;margin:8px 0}
+.unit{font-size:13px;color:#94a3b8;font-weight:normal}
+.bar{height:9px;background:#29364d;border-radius:10px;overflow:hidden;margin:13px 0 8px}
+.fill{height:100%;width:0;background:#38bdf8;border-radius:10px;transition:width .4s}
+.green{background:#34d399}
+.orange{background:#fbbf24}
+.status{font-size:13px;color:#34d399}
+.offline{color:#f87171}
+.pending{color:#fbbf24}
+.info{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid #29364d;font-size:13px}
+.info:last-child{border:0}
+.info span:first-child{color:#94a3b8}
+.info span:last-child{text-align:right;overflow-wrap:anywhere}
+a{color:#60a5fa;text-decoration:none}
+a:hover{text-decoration:underline}
+.section{margin:25px 0 12px;font-size:18px}
+footer{padding:25px 0;color:#64748b;font-size:12px}
+#error{color:#f87171;font-size:12px}
+
+.quick-link{
+display:flex;flex-direction:column;gap:9px;
+text-decoration:none;color:#e5e7eb;
+transition:transform .2s;
+}
+.quick-link:hover{transform:translateY(-3px);text-decoration:none}
+.quick-icon{font-size:28px}
+.quick-link strong{font-size:16px}
+.quick-link small{font-size:12px;color:#94a3b8}
+
+</style>
+</head>
+<body>
+<header>
+<div class="top">
+<div>
+<h1>Android Home Server</h1>
+<p>Realme 10 Pro+ · Android 14 · Debian 13</p>
+</div>
+<div class="pill" id="connection">CONNECTING...</div>
+</div>
+<p id="updated">Waiting for system data...</p>
+</header>
+
+<main>
+
+<h2 class="section">Quick Access</h2>
+<div class="grid">
+<a class="card quick-link" id="jellyfinLink" href="#" target="_blank">
+<div class="quick-icon">🎬</div>
+<strong>Jellyfin</strong>
+<small>Movies, drama and music</small>
+<span class="status">Open Media Server →</span>
+</a>
+<a class="card quick-link" href="/cloud/" target="_blank">
+<div class="quick-icon">☁️</div>
+<strong>My Cloud</strong>
+<small>Personal file storage</small>
+<span class="status">Open Cloud Storage →</span>
+</a>
+</div>
+
+<h2 class="section">System Overview</h2>
+<div class="grid">
+<div class="card">
+<h3>RAM USED</h3>
+<div class="value" id="ram">-- <span class="unit">GB</span></div>
+<div class="bar"><div class="fill" id="rambar"></div></div>
+<small id="ramdetail">Loading...</small>
+</div>
+<div class="card">
+<h3>STORAGE USED</h3>
+<div class="value" id="storage">-- <span class="unit">GB</span></div>
+<div class="bar"><div class="fill green" id="storagebar"></div></div>
+<small id="storagedetail">Loading...</small>
+</div>
+<div class="card">
+<h3>CPU</h3>
+<div class="value" id="cores">-- <span class="unit">cores</span></div>
+<small id="architecture">Loading...</small>
+</div>
+<div class="card">
+<h3>PHONE UPTIME</h3>
+<div class="value" id="uptime">--</div>
+<small>Time since Android boot</small>
+</div>
+</div>
+
+<h2 class="section">Device Information</h2>
+<div class="card">
+<div class="info"><span>Model</span><span id="model">--</span></div>
+<div class="info"><span>Manufacturer</span><span id="manufacturer">--</span></div>
+<div class="info"><span>Android</span><span id="android">--</span></div>
+<div class="info"><span>Security Patch</span><span id="security">--</span></div>
+<div class="info"><span>Build ID</span><span id="build">--</span></div>
+<div class="info"><span>CPU Architecture</span><span id="arch">--</span></div>
+</div>
+
+<h2 class="section">Server Services</h2>
+<div class="grid">
+<div class="card">
+<h2>🌐 Web Server</h2>
+<div class="status" id="webstatus">● DASHBOARD ACTIVE</div>
+<p>Nginx · Port 8080</p>
+<a href="/">Open Dashboard →</a>
+</div>
+<div class="card">
+<h2>🐍 Python API</h2>
+<div class="status" id="apistatus">● CHECKING...</div>
+<p>FastAPI · Port 8000</p>
+<a href="/api/docs">API Documentation →</a>
+</div>
+<div class="card">
+<h2>🎮 Game Server</h2>
+<div class="pending">● NOT INSTALLED</div>
+<p>Minecraft Bedrock / PocketMine-MP</p>
+</div>
+<div class="card">
+<h2>🎬 Media Server</h2>
+<div class="pending">● NOT INSTALLED</div>
+<p>Jellyfin / Media Streaming</p>
+</div>
+</div>
+
+
+<h2 class="section">Service Manager</h2>
+<div class="card" id="manager-panel">
+<p>Control API · Protected by Admin Token</p>
+
+<label for="adminToken">Admin Token</label>
+<input id="adminToken" type="password" autocomplete="off"
+       placeholder="Masukkan Admin Token"
+       style="width:100%;box-sizing:border-box;padding:12px;margin:8px 0 16px;border-radius:8px;border:1px solid #888;background:transparent;color:inherit">
+
+<div class="info"><strong>Python API</strong><span id="manager-api-status">Checking...</span></div>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 20px">
+<button onclick="managerAction('api','start')">Start</button>
+<button onclick="managerAction('api','stop')">Stop</button>
+<button onclick="managerAction('api','restart')">Restart</button>
+</div>
+
+<div class="info"><strong>Nginx</strong><span id="manager-nginx-status">Checking...</span></div>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0">
+<button onclick="managerAction('nginx','start')">Start</button>
+<button onclick="managerAction('nginx','stop')">Stop</button>
+<button onclick="managerAction('nginx','restart')">Restart</button>
+</div>
+
+<div class="info"><strong>Jellyfin Media Server</strong><span id="manager-jellyfin-status">Checking...</span></div>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 20px">
+<button onclick="managerAction('jellyfin','start')">Start</button>
+<button onclick="managerAction('jellyfin','stop')">Stop</button>
+<button onclick="managerAction('jellyfin','restart')">Restart</button>
+</div>
+
+<p id="manager-message" role="status">Ready.</p>
+<button onclick="refreshManager()">Refresh Status</button>
+</div>
+
+<h2 class="section">API Monitoring</h2>
+<div class="card">
+<div class="info"><span>API Status</span><span id="health">Checking...</span></div>
+<div class="info"><span>API Uptime</span><span id="apiuptime">--</span></div>
+<div class="info"><span>RAM Available</span><span id="ramavailable">--</span></div>
+<div class="info"><span>Storage Available</span><span id="storageavailable">--</span></div>
+<p id="error"></p>
+</div>
+</main>
+
+<footer>
+Android Home Server · Local Network Only · Auto refresh every 5 seconds
+</footer>
+
+<script>
+function setText(id,value){
+ document.getElementById(id).textContent=value ?? "--";
+}
+function setBar(id,value){
+ const el=document.getElementById(id);
+ const n=Math.max(0,Math.min(100,Number(value)||0));
+ el.style.width=n+"%";
+ if(n>=85) el.classList.add("orange");
+ else el.classList.remove("orange");
+}
+function formatTime(seconds){
+ if(!Number.isFinite(seconds)) return "--";
+ const days=Math.floor(seconds/86400);
+ const hours=Math.floor(seconds%86400/3600);
+ const mins=Math.floor(seconds%3600/60);
+ return days+"d "+hours+"h "+mins+"m";
+}
+async function refresh(){
+ try{
+  const [systemResponse,healthResponse,servicesResponse]=await Promise.all([
+   fetch("/api/system",{cache:"no-store"}),
+   fetch("/api/health",{cache:"no-store"}),
+   fetch("/api/services",{cache:"no-store"})
+  ]);
+  if(!systemResponse.ok||!healthResponse.ok) throw new Error("API response error");
+  const s=await systemResponse.json();
+  const h=await healthResponse.json();
+  const v=await servicesResponse.json();
+
+  setText("ram",s.memory.used_gb+" GB");
+  setBar("rambar",s.memory.percent_used);
+  setText("ramdetail",s.memory.percent_used+"% used · "+s.memory.available_gb+" GB available of "+s.memory.total_gb+" GB");
+
+  const disk=s.storage.shared_storage;
+  const diskUsed=100-disk.percent_free;
+  setText("storage",disk.used_gb+" GB");
+  setBar("storagebar",diskUsed);
+  setText("storagedetail",diskUsed.toFixed(1)+"% used · "+disk.free_gb+" GB free of "+disk.total_gb+" GB");
+
+  setText("cores",s.cpu.cores+" cores");
+  setText("architecture",s.cpu.architecture+" · "+s.cpu.system);
+  setText("uptime",formatTime(s.uptime.uptime_seconds));
+
+  setText("model",s.device.model);
+  setText("manufacturer",s.device.manufacturer);
+  setText("android",s.device.android_version);
+  setText("security",s.device.security_patch);
+  setText("build",s.device.build_id);
+  setText("arch",s.cpu.architecture);
+
+  setText("apistatus","● "+(v.api==="online"?"RUNNING":"OFFLINE"));
+  document.getElementById("apistatus").className="status"+(v.api==="online"?"":" offline");
+
+  setText("webstatus","● "+(v.nginx==="online"?"RUNNING":"OFFLINE"));
+  document.getElementById("webstatus").className="status"+(v.nginx==="online"?"":" offline");
+  setText("health","● "+h.status);
+  setText("apiuptime",formatTime(h.uptime_service_seconds));
+  setText("ramavailable",s.memory.available_gb+" GB");
+  setText("storageavailable",disk.free_gb+" GB");
+  setText("connection","● CONNECTED");
+  setText("updated","Last updated: "+new Date().toLocaleTimeString());
+  setText("error","");
+ }catch(e){
+  setText("connection","● API DISCONNECTED");
+  setText("apistatus","● OFFLINE");
+  document.getElementById("apistatus").className="status offline";
+  setText("health","Unavailable");
+  setText("error","Unable to retrieve system data. Retrying...");
+ }
+}
+
+async function refreshManager(){
+ try{
+  const response=await fetch("/manager/services",{cache:"no-store"});
+  if(!response.ok) throw new Error("HTTP "+response.status);
+  const data=await response.json();
+  setText("manager-api-status",data.api.toUpperCase());
+  setText("manager-nginx-status",data.nginx.toUpperCase());
+  setText("manager-jellyfin-status",data.jellyfin.toUpperCase());
+ }catch(e){
+  setText("manager-api-status","UNAVAILABLE");
+  setText("manager-nginx-status","UNAVAILABLE");
+  setText("manager-jellyfin-status","UNAVAILABLE");
+ }
+}
+
+async function managerAction(service,action){
+ const token=document.getElementById("adminToken").value.trim();
+ const message=document.getElementById("manager-message");
+
+ if(!token){
+  message.textContent="Masukkan Admin Token dahulu.";
+  return;
+ }
+
+ if((action==="stop"||action==="restart") &&
+    !confirm(action.toUpperCase()+" "+service.toUpperCase()+"?")){
+  return;
+ }
+
+ message.textContent="Sending command...";
+
+ try{
+  const response=await fetch("/manager/services/"+service+"/"+action,{
+   method:"POST",
+   headers:{"X-Admin-Token":token}
+  });
+
+  const data=await response.json();
+
+  if(!response.ok) throw new Error(data.detail||"HTTP "+response.status);
+
+  message.textContent=data.message||"Command accepted.";
+  setTimeout(refreshManager,1500);
+ }catch(e){
+  message.textContent="Failed: "+e.message;
+ }
+
+ document.getElementById("adminToken").value="";
+}
+
+refresh();
+setInterval(refresh,5000);
+refreshManager();
+setInterval(refreshManager,5000);
+</script>
+
+<script>
+document.getElementById("jellyfinLink").href = "/jellyfin/";
+</script>
+
+</body>
+</html>
